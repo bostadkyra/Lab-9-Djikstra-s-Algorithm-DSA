@@ -4,7 +4,6 @@ import java.io.IOException;
 
 public class ReadFile {
     private final AdjacencyList list = new AdjacencyList();
-    private AdjacencyMatrix matrix;
 
     public ReadFile(String path) throws IOException {
         //builds adjacency list and discovers all nodes
@@ -19,23 +18,16 @@ public class ReadFile {
                 if (p.length != 3){
                     throw new IOException("Unaccepted line format. Expected 'from to weight' but received " + line);
                 }
-                list.addEdge(p[0], p[1], Double.parseDouble(p[2]));
-            }
-        }
-        //builds adjacency matrix
-        matrix = new AdjacencyMatrix(list.getNodes());
-        for (Node a:list.getNodes()){
-            for (Edge e:list.getNeighbors(a)){
-                matrix.addEdge(e.from, e.to, e.weight);
+                try{
+                    list.addEdge(p[0], p[1], Double.parseDouble(p[2]));
+                } catch (NumberFormatException e){
+                    throw new IOException("Bad weight in line: " + line);
+                }
             }
         }
     }
 
     public AdjacencyList getAdjacencyList(){
         return list;
-    }
-
-    public AdjacencyMatrix getAdjacencyMatrix(){
-        return matrix;
     }
 }
